@@ -109,11 +109,34 @@
 				<h2 style="color: #000000">Client Flow</h2>
 				<img style="border: none; box-shadow: none;" src="img/client_flow.svg"></img>
 				</section>
-
+	
+				<section>
 				<section data-background="#ffffff">
 				<h2 style="color: #000000">Server Flow</h2>
 				<img style="border: none; box-shadow: none;" src="img/server_flow.svg"></img>
 				</section>
+				<section>
+					<h2>FRP-style handling</h2>
+<pre><code data-trim>
+function signUp(username, password, adminUser, adminPass){
+  var signedInInfo = signInAsAdmin(adminUser, adminPass);
+  var adminToken = signedInInfo.map('.token');
+  var newUserStatus = createUser(adminToken, username, password);
+  return newUserStatus;
+}
+
+function createUser(adminToken, username, password){
+  var newUserData = adminToken.flatMap(createNewUser, username, password);
+  var newUserKey = newUserData.map('.key');
+  var newUserAuthKey = 
+		Bacon.combineWith(addAuthToUser, adminToken, 
+                      username, password, 
+                      newUserKey).flatMapLatest(sendRequest);
+  return newUserAuthKey;
+}
+</code></pre>
+</section>
+</section>
 	
 				<section>
 					<h2>Experience of Using FSIO</h2>
